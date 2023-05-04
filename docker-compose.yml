@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: ghcr.io/t-history/frontend:main
+    ports:
+      - '80:80'
+    depends_on: 
+      - api
+
+  api:
+    image: ghcr.io/t-history/api:main
+    ports:
+      - '8080:8080'
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MONGO_CONNECTION_STRING: mongodb://mongouser:mongopass123@mongodb:27017
+    depends_on:
+      - redis
+      - mongodb
+  
+  loader:
+    image: ghcr.io/t-history/tg-loader:main
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MONGO_CONNECTION_STRING: mongodb://mongouser:mongopass123@mongodb:27017
+      ITERATION_FOR_CHAT: 1000
+      API_ID: 27195481
+      API_HASH: 217c8af093421bf7ba02f2852e025d77
+    depends_on:
+      - redis
+      - mongodb
+
+  redis:
+    image: "redis:latest"
+    command: ["redis-server"]
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: "mongo:latest"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongouser
+      MONGO_INITDB_ROOT_PASSWORD: mongopass123
