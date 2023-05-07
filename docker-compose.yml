@@ -4,7 +4,7 @@ services:
   frontend:
     image: ghcr.io/t-history/frontend:main
     ports:
-      - '80:3000'
+      - '3000:3000'
     depends_on: 
       - api
 
@@ -32,6 +32,16 @@ services:
     depends_on:
       - redis
       - mongodb
+  
+  bull-board:
+    image: bull-board
+    ports:
+      - "5050:3000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - redis
 
   redis:
     image: "redis:latest"
