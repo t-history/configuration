@@ -13,9 +13,16 @@ services:
     ports:
       - '8080:8080'
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      MONGO_CONNECTION_STRING: mongodb://mongouser:mongopass123@mongodb:27017
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      MONGO_CONNECTION_STRING: "mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}"
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+      ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_REGION: ${AWS_REGION}
+      S3_BACKUP_BUCKET: ${S3_BACKUP_BUCKET} 
+
     depends_on:
       - redis
       - mongodb
@@ -23,12 +30,13 @@ services:
   loader:
     image: ghcr.io/t-history/tg-loader:main
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      MONGO_CONNECTION_STRING: mongodb://mongouser:mongopass123@mongodb:27017
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      MONGO_CONNECTION_STRING: "mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}"
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
       ITERATION_FOR_CHAT: 1000
-      API_ID: 27195481
-      API_HASH: 217c8af093421bf7ba02f2852e025d77
+      API_ID: ${TG_API_ID}
+      API_HASH: ${TG_API_HASH}
     depends_on:
       - redis
       - mongodb
@@ -38,8 +46,8 @@ services:
     ports:
       - "5050:3000"
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     depends_on:
       - redis
 
@@ -54,5 +62,5 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongouser
-      MONGO_INITDB_ROOT_PASSWORD: mongopass123
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
